@@ -94,6 +94,10 @@ impl WorkTimer {
                 }
             };
 
+            if task_name == "exit" {
+                break;
+            }
+
             self.output.clear()?;
             self.do_task(&task_name)?;
             last_task_name = task_name;
