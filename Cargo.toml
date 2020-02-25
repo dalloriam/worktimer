@@ -9,4 +9,4 @@ edition = "2018"
 [dependencies]
 indicatif = "0.14"
 clap = { git = "https://github.com/clap-rs/clap" }
-rood = { path = "../../purposed/rood/" }
+rood = "0.1.3"
