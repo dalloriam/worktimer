@@ -1,5 +1,5 @@
 name = 'worktimer'
-version = '0.1.1'
+version = '0.2.0'
 stack = 'rust'
 artifact_directory = 'artifacts'
 
@@ -12,7 +12,3 @@ name = 'worktimer'
 include_checksum = true
 path_template = '$(BUILD)/worktimer'
 target_name_template = 'worktimer-$(PLATFORM)-$(ARCHITECTURE)'
-
-[[image]]
-name = "dalloriam/worktimer"
-dockerfile = "Dockerfile"
