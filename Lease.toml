@@ -12,3 +12,7 @@ name = 'worktimer'
 include_checksum = true
 path_template = '$(BUILD)/worktimer'
 target_name_template = 'worktimer-$(PLATFORM)-$(ARCHITECTURE)'
+
+[[image]]
+name = "dalloriam/worktimer"
+dockerfile = "Dockerfile"

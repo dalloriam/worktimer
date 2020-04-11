@@ -1,11 +1,14 @@
 use std::thread;
 use std::time::Duration;
 
+use anyhow::Result;
+
 use indicatif::{ProgressBar, ProgressStyle};
 
 use rood::cli::OutputManager;
 use rood::sys::notify;
-use rood::CausedResult;
+
+use crate::{Format, WorkLog};
 
 pub struct WorkTimer {
     output: OutputManager,
@@ -13,6 +16,8 @@ pub struct WorkTimer {
     short_break_minutes: u64,
     long_break_minutes: u64,
     task_count: u8,
+
+    log: WorkLog,
 }
 
 impl WorkTimer {
@@ -22,17 +27,21 @@ impl WorkTimer {
         short_break_minutes: u64,
         long_break_minutes: u64,
         task_count: u8,
+        fmt: Format,
     ) -> WorkTimer {
+        let log = WorkLog::new(fmt);
+
         WorkTimer {
             output: OutputManager::new(verbose),
             task_length_minutes,
             short_break_minutes,
             long_break_minutes,
             task_count,
+            log,
         }
     }
 
-    fn do_task(&self, task_name: &str) -> CausedResult<()> {
+    fn do_task(&self, task_name: &str) -> Result<()> {
         self.output.step(&format!("[Task] - {}", task_name));
 
         let task_seconds = self.task_length_minutes * 60;
@@ -54,7 +63,7 @@ impl WorkTimer {
         Ok(())
     }
 
-    fn pause(&self, pause_time: Duration) -> CausedResult<()> {
+    fn pause(&self, pause_time: Duration) -> Result<()> {
         let nb_of_seconds = pause_time.as_secs();
 
         self.output
@@ -75,7 +84,7 @@ impl WorkTimer {
         Ok(())
     }
 
-    pub fn run(&mut self) -> CausedResult<()> {
+    pub fn run(&mut self) -> Result<()> {
         let mut task_count: u8 = 0;
         let mut last_task_name = String::new();
 
@@ -100,6 +109,10 @@ impl WorkTimer {
 
             self.output.clear()?;
             self.do_task(&task_name)?;
+            self.log.add(
+                &task_name,
+                Duration::from_secs(60 * self.task_length_minutes),
+            )?;
             last_task_name = task_name;
 
             task_count += 1;
