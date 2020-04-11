@@ -1,8 +1,10 @@
+use std::path::PathBuf;
+
+use anyhow::Result;
+
 use clap::Clap;
 
-use rood::CausedResult;
-
-mod pomodoro;
+use pomodoro::{CLIFormat, Format};
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
@@ -28,23 +30,36 @@ pub struct CLIRoot {
     /// The number of tasks between long breaks.
     #[clap(long = "task-count", default_value = "4")]
     task_count: u8,
+
+    /// The format of the generated log.
+    #[clap(long = "format", default_value = "None")]
+    format: CLIFormat,
 }
 
 impl CLIRoot {
-    pub fn run(&self) -> CausedResult<()> {
+    pub fn run(&self) -> Result<()> {
+        // Convert CLI Format to actual format.
+        let fmt = match &self.format {
+            CLIFormat::None => Format::None,
+            CLIFormat::JSON => Format::JSON(PathBuf::from("./log.json")),
+            CLIFormat::Markdown => Format::Markdown(PathBuf::from("./log.md")),
+        };
+
         let mut work_timer = pomodoro::WorkTimer::new(
             self.verbose,
             self.task_duration_minutes,
             self.short_break_duration_minutes,
             self.long_break_duration_minutes,
             self.task_count,
+            fmt,
         );
-        work_timer.run().unwrap();
 
-        Ok(())
+        work_timer.run()
     }
 }
 
 fn main() {
-    CLIRoot::parse().run().unwrap();
+    if let Err(e) = CLIRoot::parse().run() {
+        rood::cli::OutputManager::new(true).error(&e.to_string());
+    }
 }
