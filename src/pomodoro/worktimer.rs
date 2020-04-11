@@ -108,11 +108,11 @@ impl WorkTimer {
             }
 
             self.output.clear()?;
-            self.do_task(&task_name)?;
             self.log.add(
                 &task_name,
                 Duration::from_secs(60 * self.task_length_minutes),
             )?;
+            self.do_task(&task_name)?;
             last_task_name = task_name;
 
             task_count += 1;
