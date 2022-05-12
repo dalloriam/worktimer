@@ -2,17 +2,17 @@ use std::path::PathBuf;
 
 use anyhow::Result;
 
-use clap::Clap;
+use clap::Parser;
 
 use pomodoro::{CLIFormat, Format};
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
-#[derive(Clap)]
+#[derive(Parser)]
 #[clap(version = VERSION, author = "William Dussault")]
 pub struct CLIRoot {
     /// Enable verbose output.
-    #[clap(short = "v", long = "verbose", global = true)]
+    #[clap(short = 'v', long = "verbose", global = true)]
     verbose: bool,
 
     /// The duration of a task.
@@ -46,7 +46,6 @@ impl CLIRoot {
         };
 
         let mut work_timer = pomodoro::WorkTimer::new(
-            self.verbose,
             self.task_duration_minutes,
             self.short_break_duration_minutes,
             self.long_break_duration_minutes,
@@ -59,7 +58,9 @@ impl CLIRoot {
 }
 
 fn main() {
+    xmt::init_default();
+
     if let Err(e) = CLIRoot::parse().run() {
-        rood::cli::OutputManager::new(true).error(&e.to_string());
+        xmt::error!("{e}");
     }
 }

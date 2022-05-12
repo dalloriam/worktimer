@@ -1,8 +1,8 @@
 [package]
 name = "worktimer"
 version = "0.2.0"
-authors = ["William Dussault <dalloriam@gmail.com>"]
-edition = "2018"
+authors = ["William Dussault <william@dussault.dev>"]
+edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [lib]
@@ -14,10 +14,12 @@ name = "worktimer"
 path = "./src/main.rs"
 
 [dependencies]
-anyhow = "1.0"
-chrono = "0.4"
-clap = { git = "https://github.com/clap-rs/clap" }
-indicatif = "0.14"
-rood = "0.2.0"
+anyhow = "1.0.57"
+chrono = "0.4.19"
+clap = { version = "3.1.18", features = ["derive"] }
+clearscreen = "1.0.9"
+indicatif = "0.16.2"
+notify-rust = "4"
 serde = {version = "1.0", features = ["derive"]}
 serde_json = "1.0"
+xmt = "0.1.0"
