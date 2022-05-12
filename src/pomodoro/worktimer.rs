@@ -5,12 +5,16 @@ use anyhow::Result;
 
 use indicatif::{ProgressBar, ProgressStyle};
 
-use notify_rust::Notification;
+use notify_rust::{Notification, Timeout};
 
 use crate::{Format, WorkLog};
 
 fn send_notification(title: &str, body: &str) -> Result<()> {
-    Notification::new().summary(title).body(body).show()?;
+    Notification::new()
+        .summary(title)
+        .body(body)
+        .timeout(Timeout::Milliseconds(5000))
+        .show()?;
     Ok(())
 }
 
